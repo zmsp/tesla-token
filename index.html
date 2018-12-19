@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta content="#ffffff" name="theme-color" />
+    <title>Semantic-UI-Forest, collection of design, themes and templates for Semantic-UI.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+          type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+</head>
+<body class="template">
+<div class="ui center aligned grid">
+    <div class="ui container">
+
+        <form class="ui large form" id="my-form">
+            <h3 class="ui huge header">
+                Login with Tesla account
+            </h3>
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="user icon"></i><input name="email" placeholder="E-mail address" type="text" />
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="lock icon"></i><input name="password" placeholder="Password" type="password" />
+                </div>
+            </div>
+            <!--<div class="field">-->
+                <!--<div class="ui checkbox">-->
+                    <!--<input class="hidden" tabindex="0" type="checkbox" /><label>Remember me? TODO</label>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="ui fluid large primary submit button">
+                Sign in
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/static/dist/semantic-ui/semantic.min.js"></script>
+<style type="text/css">
+    body {
+        background-color: #eee;
+    }
+
+    .ui.container {
+        margin-top: 6em;
+        max-width: 22em !important;
+    }
+</style>
+<script>
+    $(document)
+        .ready(function() {
+            $('.ui.checkbox').checkbox();
+            $('.ui.form')
+                .form({
+                    fields: {
+                        email: {
+                            identifier  : 'email',
+                            rules: [
+                                {
+                                    type   : 'empty',
+                                    prompt : 'Please enter your e-mail'
+                                },
+                                {
+                                    type   : 'email',
+                                    prompt : 'Please enter a valid e-mail'
+                                }
+                            ]
+                        },
+                        password: {
+                            identifier  : 'password',
+                            rules: [
+                                {
+                                    type   : 'empty',
+                                    prompt : 'Please enter your password'
+                                },
+                                {
+                                    type   : 'length[6]',
+                                    prompt : 'Your password must be at least 6 characters'
+                                }
+                            ]
+                        }
+                    },
+                    inline: true,
+                    on: 'blur'
+                })
+            ;
+        })
+    ;
+
+    $(function() {
+        $('#my-form').on("submit",function(e) {
+            e.preventDefault();
+            if( $('.ui.form').form('is valid')) {
+                $.ajax({
+                    type: "POST",
+                    url: "https://owner-api.teslamotors.com/oauth/token?grant_type=password",
+                    crossDomain: true,
+                    data: {"grant_type": "password",
+                        "client_id": "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384",
+                        "client_secret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3",
+                        "email": "elon@teslamotors.com",
+                        "password": "edisonsux"},
+                    success: function (data) {
+                        print(data)
+                        var d1= data
+                    },
+                    error: function (err) {
+                        var d1= err
+                    }
+                });
+            }
+            else
+                console.log("INVALID")
+        });
+    });
+
+
+</script>
+</body>
+<footer>
+
+</footer>
+</html>
