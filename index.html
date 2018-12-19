@@ -1,85 +1,104 @@
-
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta content="#ffffff" name="theme-color" />
-    <title>Semantic-UI-Forest, collection of design, themes and templates for Semantic-UI.</title>
+    <meta charset="utf-8"/>
+
+    <meta content="#ffffff" name="theme-color"/>
+    <title>Tesla API Generator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
           type="text/css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <base href="/tesla-api-generator/">
+    <link rel="stylesheet" href="./assets/css/stylesheet.css"/>
 </head>
 <body class="template">
-<div class="ui center aligned grid">
+<div class="ui massive fixed red inverted menu">
     <div class="ui container">
+        <a class="header item" href="#">
+            <h2>
+                <font_t>TESLA TOKEN</font_t>
+            </h2>
+        </a>
+        <a class="item" href="http://zobairshahadat.com" aria-label="Follow @zmsp on GitHub">Blogs </a>
 
-        <form class="ui large form" id="my-form">
-            <h3 class="ui huge header">
-                Login with Tesla account
-            </h3>
-            <div class="field">
-                <div class="ui left icon input">
-                    <i class="user icon"></i><input name="email" placeholder="E-mail address" type="text" />
-                </div>
-            </div>
-            <div class="field">
-                <div class="ui left icon input">
-                    <i class="lock icon"></i><input name="password" placeholder="Password" type="password" />
-                </div>
-            </div>
-            <!--<div class="field">-->
-                <!--<div class="ui checkbox">-->
-                    <!--<input class="hidden" tabindex="0" type="checkbox" /><label>Remember me? TODO</label>-->
-                <!--</div>-->
-            <!--</div>-->
-            <div class="ui fluid large primary submit button">
-                Sign in
-            </div>
-        </form>
+        <div class="right menu">
+            <a class="item" href="https://github.com/zmsp/tesla-token"> <i class="github icon"></i> Code </a>
+        </div>
+
     </div>
 </div>
-<script src="/static/dist/semantic-ui/semantic.min.js"></script>
+<div class="ui main center aligned text container">
+    <form class="ui large form" id="my-form">
+        <h2 class="ui huge header">
+            <font_t>LOGIN</font_t>
+        </h2>
+        <h5>Login with your tesla account to get your token </h5>
+        <div class="field">
+            <div class="ui left icon input">
+                <i class="user icon"></i><input name="email" placeholder="E-mail address" type="text"/>
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui left icon input">
+                <i class="lock icon"></i><input name="password" placeholder="Password" type="password"/>
+            </div>
+        </div>
+        <!--<div class="field">-->
+        <!--<div class="ui checkbox">-->
+        <!--<input class="hidden" tabindex="0" type="checkbox" /><label>Remember me? TODO</label>-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="ui fluid large red submit button">
+            <h4>Get Token</h4>
+        </div>
+    </form>
+    <p>An important note about the token: This token will grant access to everything availale on the Tesla api. See <a href="https://github.com/zmsp/python-my-tesla#function-descriptions" > functions here</a>. Be mindful of the applications/developers you will share the token with. Additionally the code for this website is available <a href="https://github.com/zmsp/tesla-token/blob/master/index.html">here</a>. </p>
+
+</div>
 <style type="text/css">
-    body {
-        background-color: #eee;
+    .main.container {
+        margin-top: 7em;
     }
 
-    .ui.container {
-        margin-top: 6em;
-        max-width: 22em !important;
+    p.lead {
+        font-size: 1.3em;
+        color: #333333;
+        line-height: 1.4;
+        font-weight: 300;
     }
 </style>
 <script>
     $(document)
-        .ready(function() {
+        .ready(function () {
             $('.ui.checkbox').checkbox();
             $('.ui.form')
                 .form({
                     fields: {
                         email: {
-                            identifier  : 'email',
+                            identifier: 'email',
                             rules: [
                                 {
-                                    type   : 'empty',
-                                    prompt : 'Please enter your e-mail'
+                                    type: 'empty',
+                                    prompt: 'Please enter your e-mail'
                                 },
                                 {
-                                    type   : 'email',
-                                    prompt : 'Please enter a valid e-mail'
+                                    type: 'email',
+                                    prompt: 'Please enter a valid e-mail'
                                 }
                             ]
                         },
                         password: {
-                            identifier  : 'password',
+                            identifier: 'password',
                             rules: [
                                 {
-                                    type   : 'empty',
-                                    prompt : 'Please enter your password'
+                                    type: 'empty',
+                                    prompt: 'Please enter your password'
                                 },
                                 {
-                                    type   : 'length[6]',
-                                    prompt : 'Your password must be at least 6 characters'
+                                    type: 'length[6]',
+                                    prompt: 'Your password must be at least 6 characters'
                                 }
                             ]
                         }
@@ -91,25 +110,27 @@
         })
     ;
 
-    $(function() {
-        $('#my-form').on("submit",function(e) {
+    $(function () {
+        $('#my-form').on("submit", function (e) {
             e.preventDefault();
-            if( $('.ui.form').form('is valid')) {
+            if ($('.ui.form').form('is valid')) {
                 $.ajax({
                     type: "POST",
                     url: "https://owner-api.teslamotors.com/oauth/token?grant_type=password",
                     crossDomain: true,
-                    data: {"grant_type": "password",
+                    data: {
+                        "grant_type": "password",
                         "client_id": "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384",
                         "client_secret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3",
                         "email": "elon@teslamotors.com",
-                        "password": "edisonsux"},
+                        "password": "edisonsux"
+                    },
                     success: function (data) {
                         print(data)
-                        var d1= data
+                        var d1 = data
                     },
                     error: function (err) {
-                        var d1= err
+                        var d1 = err
                     }
                 });
             }
@@ -120,7 +141,11 @@
 
 
 </script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
+
+
+</body>-->
 <footer>
 
 </footer>
