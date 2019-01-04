@@ -28,32 +28,85 @@
 
     </div>
 </div>
-<div class="ui main center aligned text container">
-    <form class="ui large form" id="my-form">
+<div class="ui main center aligned text container  ">
+
+    <form class="ui large form" id="cred-form">
         <h2 class="ui huge header">
             <font_t>LOGIN</font_t>
         </h2>
         <h5>Login with your tesla account to get your token </h5>
         <div class="field">
             <div class="ui left icon input">
-                <i class="user icon"></i><input name="email" placeholder="E-mail address" type="text"/>
+                <i class="user icon"></i><input name="email" id="email" placeholder="E-mail address" type="text"/>
             </div>
         </div>
         <div class="field">
             <div class="ui left icon input">
-                <i class="lock icon"></i><input name="password" placeholder="Password" type="password"/>
+                <i class="lock icon"></i><input id="password" name="password" placeholder="Password" type="password"/>
             </div>
         </div>
-        <!--<div class="field">-->
+        <!--<div class="field"> TODO cookie-->
         <!--<div class="ui checkbox">-->
         <!--<input class="hidden" tabindex="0" type="checkbox" /><label>Remember me? TODO</label>-->
         <!--</div>-->
         <!--</div>-->
+        <div class="ui error message"></div>
         <div class="ui fluid large red submit button">
             <h4>Get Token</h4>
         </div>
+        <div id="loader" class="ui inverted active dimmer">
+            <div class="ui large text loader">Working on it ...</div>
+        </div>
     </form>
-    <p>An important note about the token: This token will grant access to everything availale on the Tesla api. See <a href="https://github.com/zmsp/python-my-tesla#function-descriptions" > functions here</a>. Be mindful of the applications/developers you will share the token with. Additionally the code for this website is available <a href="https://github.com/zmsp/tesla-token/blob/master/index.html">here</a>. </p>
+    <br/>
+    <form class="ui large form" id="data-form" hidden="true">
+        <div class="field">
+            <div class="ui action input">
+                <input type="text" id="token-box" value="None">
+                <button class="ui red right labeled icon button">
+                    <i class="copy icon"></i>
+                    Copy
+                </button>
+
+            </div>
+        </div>
+
+
+        <div class="ui existing segment left aligned">
+            <pre>
+            <code id="code-box" class="evaluated code javascript">
+None
+        </code>
+        </pre>
+        </div>
+    </form>
+    <p>An important note about the token: This token will grant access to everything availale on the Tesla api. See <a
+            href="https://github.com/zmsp/python-my-tesla#function-descriptions"> functions here</a>. Be mindful of the
+        applications/developers you will share the token with. Additionally the code for this website is available <a
+                href="https://github.com/zmsp/tesla-token/blob/master/index.html">here</a>. </p>
+
+</div>
+
+
+
+<div class="ui page dimmer" id="page-dimmer">
+    <div class="content">
+        <p>Tesla API blocks <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing"
+                               rel="nofollow">CORS</a> request, rendering this application useless until Tesla api
+            enables CORS request.</p>
+        <p>As a fix you can install the following to allow this application to work.</p>
+        <ul>
+            <li><a target="_blank"
+                   href="https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en"
+                   rel="nofollow">For Google Chrome</a></li>
+            <li><a target="_blank" href="https://addons.mozilla.org/en-US/firefox/addon/cors-everywhere/"
+                   rel="nofollow">For Firefox</a></li>
+            <li><a target="_blank" href="https://addons.opera.com/en/extensions/details/cors-toggle/" rel="nofollow">For
+                Opera</a></li>
+            <li><a target="_blank" href="https://www.google.com/chrome/" rel="nofollow">For Internet Explorer</a></li>
+        </ul>
+        Read more <a href="https://github.com/zmsp/tesla-token/wiki">here</a>
+    </div>
 
 </div>
 <style type="text/css">
@@ -61,12 +114,6 @@
         margin-top: 7em;
     }
 
-    p.lead {
-        font-size: 1.3em;
-        color: #333333;
-        line-height: 1.4;
-        font-weight: 300;
-    }
 </style>
 <script>
     $(document)
@@ -96,8 +143,8 @@
                                     prompt: 'Please enter your password'
                                 },
                                 {
-                                    type: 'length[6]',
-                                    prompt: 'Your password must be at least 6 characters'
+                                    type: 'length[8]',
+                                    prompt: 'Your password must be at least 8 characters'
                                 }
                             ]
                         }
@@ -109,10 +156,39 @@
         })
     ;
 
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    };
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    };
+
+    function eraseCookie(name) {
+        document.cookie = name + '=; Max-Age=-99999999;';
+    };
+
     $(function () {
-        $('#my-form').on("submit", function (e) {
+        $('#cred-form').on("submit", function (e) {
             e.preventDefault();
-            if ($('.ui.form').form('is valid')) {
+
+            if ($('#cred-form').form('is valid')) {
+                var email_val = $('#email')[0].value
+                var password_val = $('#password')[0].value
+                $("#loader")[0].classList.add("active")
                 $.ajax({
                     type: "POST",
                     url: "https://owner-api.teslamotors.com/oauth/token?grant_type=password",
@@ -121,30 +197,46 @@
                         "grant_type": "password",
                         "client_id": "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384",
                         "client_secret": "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3",
-                        "email": "elon@teslamotors.com",
-                        "password": "edisonsux"
+                        "email": email_val,
+                        "password": password_val
                     },
                     success: function (data) {
-                        print(data)
-                        var d1 = data
+                        $('#token-box')[0].value = data["access_token"]
+                        $('#code-box')[0].textContent = JSON.stringify(data, null, 2);
+                        $("#loader")[0].classList.remove("active")
+
+                        $('#cred-form')
+                            .transition('fly left', 700, function () {
+                                $('#data-form')
+                                    .transition('fly right')
+                                ;
+                            })
+
                     },
                     error: function (err) {
-                        var d1 = err
+                        if (err["status"] == 0) {
+                            $('#page-dimmer')[0].classList.add("active")
+                        } else if (err["status"] == 401) {
+                            var userselection = confirm("Invalid Username/Password OR CORS error. Need help?");
+                            if (userselection) {
+                                $("#page-dimmer")[0].classList.add("active")
+                            }
+
+                        }
+                        $("#loader")[0].classList.remove("active")
+
                     }
                 });
-            }
-            else
+
+            } else
                 console.log("INVALID")
+
         });
     });
-
+    $("#loader")[0].classList.remove("active")
 
 </script>
-<script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
-
-
-</body>-->
 <footer>
 
 </footer>
